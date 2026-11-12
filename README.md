@@ -55,13 +55,6 @@ python -m http.server 8080
 ```
 Open http://localhost:8080 and click **Start camera** (the camera only works on localhost or https).
 
-## Demo flow (judges)
-1. Start the camera. The hand skeleton appears live.
-2. Click **Record** on "Hello" and hold the sign for 3 s. Do the same for "Thank you", "Yes" and "Help" (record each 2–3 times).
-3. Sign "Hello" → "Help". Words appear and are spoken.
-4. Add a new custom sign live from a judge's suggestion. This is the wow moment.
-5. Export the model JSON to show that it's portable.
-
 ## ASL alphabet model (pretrained)
 - Data: the Hugging Face dataset `Marxulia/asl_sign_languages_alphabets_v03` (photos of the letters A–Z). I used 180 photos per letter, and MediaPipe found a hand in 3,694 of them.
 - Features: 63 normalised keypoints, mirrored so left and right hands look the same, plus 210 pairwise joint distances (273 in total).
