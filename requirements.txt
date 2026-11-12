@@ -2,3 +2,4 @@
 numpy>=2.0
 scikit-learn>=1.5
 pyarrow>=15.0
+matplotlib>=3.8    # charts in results/ (tools/make_report.py)

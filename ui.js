@@ -27,9 +27,10 @@ function select(name, isOpen) {
   $("shelfHint").classList.toggle("hidden", !!current);
 }
 
-// two folders side by side, sized to the card they sit in
+// two folders side by side, sized to the card they sit in, leaving room
+// at the sides for the cards that fan out when a folder opens
 const shelfW = $("shelf").clientWidth || 360;
-const width = Math.max(120, Math.min(210, Math.floor((shelfW - 18) / 2) - 4));
+const width = Math.max(120, Math.min(200, Math.floor((shelfW - 18) / 2) - 22));
 const asl = createFolder({
   label: "ASL Alphabet", art: "ember", seed: 11, width, action: "none", tone: tone(),
   labelPlacement: "top-left", appearDelay: 0,

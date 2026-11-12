@@ -2,9 +2,55 @@
 
 Real-time sign-to-speech in the browser. Teach it any sign in about 3 seconds, then sign to build sentences that get spoken aloud. No server, no API keys, and video never leaves the device.
 
+![SignSpeak in dark mode](results/screenshots/app-dark.png)
+
+<p>
+  <img src="results/screenshots/app-light.png" alt="SignSpeak in light mode" width="64%" />
+  <img src="results/screenshots/mobile-dark.png" alt="SignSpeak on a phone" width="22%" />
+</p>
+
+## Results
+
+### ASL alphabet model: 95.8% test accuracy
+
+![How each step improved accuracy](results/accuracy_progression.png)
+
+| Step | Test accuracy |
+|---|---|
+| Raw keypoints, k-NN | 69.7% |
+| + left & right hands unified, k-NN | 75.5% |
+| + pairwise joint distances, scaled, k-NN | 90.9% |
+| **Neural network (273 → 128 → 26)** | **95.8%** |
+
+Evaluated on a held-out, stratified 20% test split (739 images). On horizontally mirrored photos, which simulate the other hand, it scores 98%.
+
+![Accuracy per letter](results/per_letter_accuracy.png)
+
+Q is the hardest letter (72%). It gets confused with G, H and T, which have similar hand shapes. Every other letter scores 89% or higher.
+
+<details>
+<summary>Confusion matrix</summary>
+
+![Confusion matrix](results/confusion_matrix.png)
+
+</details>
+
+Full per-letter precision, recall and F1: [`results/training_report.txt`](results/training_report.txt).
+Regenerate everything with `python tools/make_report.py`.
+
+> **Caveat:** many dataset photos are frames from the same few videos, so neighbouring frames can land in both
+> the training and test sets. Real-world webcam accuracy will be lower than these numbers.
+
+### The sign library
+
+<p>
+  <img src="results/screenshots/library-asl-dark.png" alt="ASL Alphabet folder open" width="45%" />
+  <img src="results/screenshots/library-mysigns-light.png" alt="My Signs folder open" width="45%" />
+</p>
+
 ## Run it
+Full setup on a fresh machine: [SETUP.md](SETUP.md).
 ```bash
-cd signspeak
 python -m http.server 8080
 ```
 Open http://localhost:8080 and click **Start camera** (the camera only works on localhost or https).
@@ -20,7 +66,7 @@ Open http://localhost:8080 and click **Start camera** (the camera only works on 
 - Data: the Hugging Face dataset `Marxulia/asl_sign_languages_alphabets_v03` (photos of the letters A–Z). I used 180 photos per letter, and MediaPipe found a hand in 3,694 of them.
 - Features: 63 normalised keypoints, mirrored so left and right hands look the same, plus 210 pairwise joint distances (273 in total).
 - Model: an MLP with one hidden layer (273 → 128 ReLU → 26), trained with scikit-learn and exported to `asl-model.json` (0.33 MB). It runs in plain JS in the browser.
-- Results: **95.8% test accuracy** (a k-NN baseline gets 90.9%, raw keypoints alone 67%). On mirrored photos (the other hand) it scores 98%. Q is the weakest letter.
+- Results: **95.8% test accuracy** (a k-NN baseline gets 90.9%, raw keypoints alone 69.7%). See [Results](#results).
 - To rebuild: run `python tools/download_dataset.py`, then `python tools/unpack_dataset.py`, then `python tools/build_server.py`, open `http://localhost:8081/tools/build.html?per=180`, and finally run `python tools/train_asl.py`.
 
 ## How it works (the AI/ML part)

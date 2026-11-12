@@ -1,0 +1,56 @@
+SignSpeak: ASL alphabet model report
+========================================
+Samples with a detected hand: 3694  (train 2955 / test 739, stratified 80/20, seed 42)
+Features: 63 normalised keypoints (one chirality) + 210 pairwise joint distances = 273
+
+Accuracy progression (same test set):
+  Raw keypoints (k-NN)                          69.7%
+  + left & right hands unified (k-NN)           75.5%
+  + joint distances, scaled (k-NN)              90.9%
+  Neural network 273 → 128 → 26                 95.8%
+
+Most common confusions (true -> predicted: count):
+  Y -> I: 2
+  R -> U: 2
+  Q -> T: 2
+  Q -> H: 2
+  P -> Q: 2
+  D -> C: 2
+  Z -> J: 1
+  X -> Q: 1
+  X -> P: 1
+  X -> J: 1
+
+Per-letter report (neural network):
+              precision    recall  f1-score   support
+
+           A      0.969     1.000     0.984        31
+           B      1.000     1.000     1.000        30
+           C      0.875     1.000     0.933        28
+           D      1.000     0.929     0.963        28
+           E      0.968     1.000     0.984        30
+           F      1.000     0.964     0.982        28
+           G      0.966     1.000     0.982        28
+           H      0.935     1.000     0.967        29
+           I      0.929     0.963     0.945        27
+           J      0.879     1.000     0.935        29
+           K      0.966     0.966     0.966        29
+           L      1.000     0.967     0.983        30
+           M      1.000     0.967     0.983        30
+           N      0.966     0.966     0.966        29
+           O      1.000     0.960     0.980        25
+           P      0.923     0.889     0.906        27
+           Q      0.857     0.720     0.783        25
+           R      1.000     0.893     0.943        28
+           S      0.964     0.964     0.964        28
+           T      0.938     1.000     0.968        30
+           U      0.906     1.000     0.951        29
+           V      0.966     0.966     0.966        29
+           W      0.963     0.963     0.963        27
+           X      0.960     0.889     0.923        27
+           Y      1.000     0.935     0.967        31
+           Z      1.000     0.963     0.981        27
+
+    accuracy                          0.958       739
+   macro avg      0.959     0.956     0.956       739
+weighted avg      0.959     0.958     0.958       739
