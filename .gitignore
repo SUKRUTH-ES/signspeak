@@ -1,0 +1,13 @@
+# dataset (download with: python tools/download_dataset.py)
+data/asl.parquet
+data/images/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# misc
+*.zip
+.DS_Store
+Thumbs.db

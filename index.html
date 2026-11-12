@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SignSpeak</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="bgArt" class="bg" aria-hidden="true"><div class="bg-veil"></div><div class="bg-dots"></div></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">✋</span>
+      <div>
+        <h1>SignSpeak</h1>
+        <p>Sign to talk. Runs fully in your browser.</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span id="status" class="pill">Camera off</span>
+      <button id="camBtn" class="btn primary small" type="button">● Start camera</button>
+    </div>
+  </header>
+
+  <main class="grid">
+    <!-- Camera + live prediction -->
+    <section class="card glass cam-card">
+      <div class="cam-wrap">
+        <video id="video" playsinline muted></video>
+        <canvas id="overlay"></canvas>
+        <div id="camPlaceholder" class="cam-placeholder">
+          <p>Start the camera to begin</p>
+          <button id="startBtn" class="btn primary">Start camera</button>
+        </div>
+        <div id="countdown" class="countdown hidden"></div>
+        <button id="stopOverlayBtn" class="cam-stop hidden" type="button" aria-label="Turn camera off">■ Stop</button>
+      </div>
+
+      <div class="prediction">
+        <div>
+          <span class="label-sm mono">DETECTED</span>
+          <div id="predLabel" class="pred-label">—</div>
+        </div>
+        <div class="conf">
+          <span class="label-sm mono">CONFIDENCE <b id="confText">0%</b></span>
+          <div class="bar"><div id="confBar"></div></div>
+          <div class="bar hold"><div id="holdBar"></div></div>
+          <span class="label-sm">Hold steady to add it</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sentence output -->
+    <section class="card glass out-card">
+      <div class="card-head">
+        <h2>Sentence</h2>
+        <label class="toggle"><input type="checkbox" id="autoSpeak" checked /> Speak as I sign</label>
+      </div>
+      <div id="sentence" class="sentence empty">Your signed words will appear here…</div>
+      <div class="row">
+        <button id="speakBtn" class="btn primary">🔊 Speak</button>
+        <button id="spaceBtn" class="btn">␣ Space</button>
+        <button id="undoBtn" class="btn">↶ Undo</button>
+        <button id="clearBtn" class="btn">Clear</button>
+      </div>
+    </section>
+
+    <!-- Sign library: two glass folders -->
+    <section class="card glass train-card">
+      <div class="card-head">
+        <h2>Sign library</h2>
+        <span id="totalSamples" class="label-sm mono">0 samples</span>
+      </div>
+
+      <div id="shelf" class="shelf"></div>
+      <p id="shelfHint" class="hint center mono hidden">HOVER TO LEAN · CLICK TO OPEN · + TO ADD</p>
+
+      <div id="panelAsl" class="folder-panel hidden">
+        <div class="card-head">
+          <div>
+            <b>ASL alphabet (A–Z)</b>
+            <span id="aslInfo" class="label-sm block">Pretrained on real ASL photos: fingerspell words</span>
+          </div>
+          <button id="aslBtn" class="btn primary small" type="button">Load</button>
+        </div>
+        <div id="aslGrid" class="asl-grid hidden"></div>
+      </div>
+
+      <div id="panelMine" class="folder-panel hidden">
+        <p class="hint">Add a sign, press <b>Record</b>, then hold the gesture in view for 3 seconds. Record each one 2–3 times from slightly different angles.</p>
+        <form id="addForm" class="row">
+          <input id="newLabel" type="text" placeholder="New sign, e.g. Water" maxlength="24" autocomplete="off" />
+          <button class="btn primary" type="submit">Add</button>
+        </form>
+        <ul id="signList" class="sign-list"></ul>
+      </div>
+
+      <details class="settings">
+        <summary>Settings &amp; data</summary>
+        <label>Neighbours (k): <b id="kVal">5</b>
+          <input id="kRange" type="range" min="1" max="15" value="5" />
+        </label>
+        <label>Max match distance: <b id="distVal">1.2</b>
+          <input id="distRange" type="range" min="0.3" max="3" step="0.1" value="1.2" />
+        </label>
+        <label>Hold frames to commit: <b id="holdVal">12</b>
+          <input id="holdRange" type="range" min="4" max="40" value="12" />
+        </label>
+        <div class="row">
+          <button id="exportBtn" class="btn" type="button">Export model</button>
+          <label class="btn file-btn">Import model<input id="importFile" type="file" accept="application/json" /></label>
+          <button id="resetBtn" class="btn danger" type="button">Reset all</button>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <section class="how glass card">
+    <h2>How it works</h2>
+    <ol>
+      <li><b>Hand tracking:</b> MediaPipe Hand Landmarker finds 21 3D keypoints per hand, for up to two hands, every frame.</li>
+      <li><b>Features:</b> keypoints are re-centred on the wrist and scaled, so position and distance from the camera don't matter.</li>
+      <li><b>Classifier:</b> a k-nearest-neighbour model matches the live pose against the pretrained ASL alphabet and your own recorded signs.</li>
+      <li><b>Output:</b> stable signs are committed. Letters join into words, and everything is spoken with the Web Speech API.</li>
+    </ol>
+    <p class="privacy">🔒 Video never leaves your device. All inference runs locally.</p>
+  </section>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
